@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login Page</title>
-
 
     <!-- Owl-Carousel -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
@@ -20,6 +18,49 @@
 
     <!-- Custom Style-->
     <link rel="stylesheet" href="./css/Style.css">
+    <style>
+        /* Transitions for smoother form switch */
+        #signupSection, #loginSection {
+            transition: all 0.5s ease;
+        }
+        
+        .input-tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            top: -30px;
+            display: none;
+        }
+
+        .form-group:hover .input-tooltip {
+            display: block;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-input:invalid {
+            border-color: red;
+        }
+
+        .form-input:valid {
+            border-color: green;
+        }
+
+        .form-feedback {
+            font-size: 0.85rem;
+            color: red;
+            display: none;
+        }
+
+        .form-feedback.success {
+            color: green;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,13 +72,11 @@
                     <h4><i class="fas fa-drafting-compass"></i> Ready Co.</h4>
 
                     <!-- Owl-Carousel -->
-
                     <div class="owl-carousel owl-theme">
                         <img src="./assets/undraw_authentication_fsn5.svg" alt="" class="login_img">
                         <img src="./assets/undraw_personal_data_29co.svg" alt="" class="login_img">
                         <img src="./assets/undraw_fingerprint_swrc.svg" alt="" class="login_img">
                     </div>
-
                     <!-- /Owl-Carousel -->
 
                     <div class="follow">
@@ -45,31 +84,68 @@
                         <i class="fab fa-twitter"></i>
                     </div>
                 </div>
-                <div class="col login">
 
-                    <button type="button" class="btn btn-signup">Sign Up</button>
-                    <form>
+                <!-- Login Section -->
+                <div class="col login" id="loginSection">
+                    <button type="button" class="btn btn-signup" onclick="toggleForm('signup')">Sign Up</button>
+                    <form onsubmit="return validateLogin()">
                         <div class="titles">
                             <h6>We keep everything</h6>
                             <h3>Ready to Login</h3>
                         </div>
                         <div class="form-group">
-                            <input type="text" placeholder="Email" class="form-input">
+                            <input type="email" placeholder="Email" class="form-input" required>
                             <div class="input-icon">
                                 <i class="fas fa-user"></i>
                             </div>
+                            <span class="input-tooltip">Please enter your email</span>
                         </div>
                         <div class="form-group">
-                            <input type="password" placeholder="Password" class="form-input">
+                            <input type="password" placeholder="Password" class="form-input" required>
                             <div class="input-icon">
                                 <i class="fas fa-user-lock"></i>
                             </div>
+                            <span class="input-tooltip">Please enter your password</span>
                         </div>
-
                         <button type="submit" class="btn btn-login">Login</button>
+                        <p id="loginFeedback" class="form-feedback"></p>
                     </form>
-
                 </div>
+
+                <!-- Sign-Up Section -->
+                <div class="col login" id="signupSection" style="display:none;">
+                    <button type="button" class="btn btn-login" onclick="toggleForm('login')">Login</button>
+                    <form onsubmit="return validateSignup()">
+                        <div class="titles">
+                            <h6>Create your Account</h6>
+                            <h3>Sign Up</h3>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Full Name" class="form-input" required>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="input-tooltip">Enter your full name</span>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" class="form-input" required>
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span class="input-tooltip">Enter a valid email</span>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-input" required>
+                            <div class="input-icon">
+                                <i class="fas fa-user-lock"></i>
+                            </div>
+                            <span class="input-tooltip">Enter a strong password</span>
+                        </div>
+                        <button type="submit" class="btn btn-login">Sign Up</button>
+                        <p id="signupFeedback" class="form-feedback"></p>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -80,7 +156,6 @@
 
     <script>
         $(document).ready(function () {
-
             $('.owl-carousel').owlCarousel({
                 loop: true,
                 autoplay: true,
@@ -89,6 +164,43 @@
                 items: 1
             });
         });
+
+        function toggleForm(form) {
+            if (form === 'signup') {
+                document.getElementById('signupSection').style.display = 'block';
+                document.getElementById('loginSection').style.display = 'none';
+            } else {
+                document.getElementById('signupSection').style.display = 'none';
+                document.getElementById('loginSection').style.display = 'block';
+            }
+        }
+
+        function validateLogin() {
+            const email = document.querySelector('#loginSection input[type="email"]').value;
+            const password = document.querySelector('#loginSection input[type="password"]').value;
+            if (!email || !password) {
+                document.getElementById('loginFeedback').textContent = 'Please fill in all fields.';
+                document.getElementById('loginFeedback').style.display = 'block';
+                return false;
+            }
+            document.getElementById('loginFeedback').textContent = 'Login successful!';
+            document.getElementById('loginFeedback').classList.add('success');
+            return true;
+        }
+
+        function validateSignup() {
+            const email = document.querySelector('#signupSection input[type="email"]').value;
+            const password = document.querySelector('#signupSection input[type="password"]').value;
+            const name = document.querySelector('#signupSection input[type="text"]').value;
+            if (!email || !password || !name) {
+                document.getElementById('signupFeedback').textContent = 'Please fill in all fields.';
+                document.getElementById('signupFeedback').style.display = 'block';
+                return false;
+            }
+            document.getElementById('signupFeedback').textContent = 'Signup successful!';
+            document.getElementById('signupFeedback').classList.add('success');
+            return true;
+        }
     </script>
 </body>
 
